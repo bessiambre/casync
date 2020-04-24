@@ -10,9 +10,9 @@ exports.casync=function(fn) {
 			}
 			try{
 				let v=gen.next((cargs.length === 0?undefined:(cargs.length===1?cargs[0]:cargs)));
-				if(v.done && !doneCalled){
-					done(null);//call done if the function reaches the end. (a but like a normal function returns at the end even if return is not explicitely called)
-				}
+				// if(v.done && !doneCalled){
+				// 	done(null);//call done if the function reaches the end. (a but like a normal function returns at the end even if return is not explicitely called)
+				// }
 			}catch(err){
 				if(done){
 					done(err);

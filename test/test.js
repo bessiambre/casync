@@ -71,14 +71,14 @@ describe('casync', function() {
 		});
 	});
 	
-	it('Done should automatically be called when generater reaches end', function(testdone) {
-		let asyncawaitFn=casync(function*(val,done,next){
-			yield timeoutSet(20,next);
-		});
-		asyncawaitFn(3,(err,res)=>{
-			testdone(false);
-		});
-	});
+	// it('Done should automatically be called when generater reaches end', function(testdone) {
+	// 	let asyncawaitFn=casync(function*(val,done,next){
+	// 		yield timeoutSet(20,next);
+	// 	});
+	// 	asyncawaitFn(3,(err,res)=>{
+	// 		testdone(false);
+	// 	});
+	// });
 
 	it('this pointer set correctly on methods', function(testdone) {
 
