@@ -20,8 +20,9 @@ $ npm install casync
 
 ## Features
 
-  * Small and simple implementation (only 24 lines of code).
+  * Small and simple implementation (only 39 lines of code, no dependency).
   * Proper exception handling.
+  * Checks for calling for repeated calls to done
   * Promise free!
 
 It's a simple generator function wrapper that allows you to pause execution when you call [asyncronous functions](https://caolan.github.io/async/v3/global.html#AsyncFunction).
