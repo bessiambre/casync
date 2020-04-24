@@ -1,2 +1,116 @@
-# casync
-Promise free Async/await 
+# Callback async/await
+Promise free Async/await. [Why](https://medium.com/@b.essiambre/continuation-passing-style-patterns-for-javascript-5528449d3070?source=friends_link&sk=976fb25ca6c15eba3a4badcf55ba698e) wrap your function calls in state machines.
+
+```js
+const {casync} = require('casync');
+
+let addTitleToReadme=casync(function*(prepend,next){
+	let data = yield fs.readFile('README.md',next);
+	console.log(prepend+"\n"+data);
+});
+
+addTitleToReadme("This is a Good Title");
+```
+
+## Installation
+
+```bash
+$ npm install casync
+```
+
+## Features
+
+  * Small and simple implementation (only 24 lines of code).
+  * Proper exception handling.
+  * Promise free!
+
+It's a simple generator function wrapper that allows you to pause execution when you call [asyncronous functions](https://caolan.github.io/async/v3/global.html#AsyncFunction).
+
+This library currently contains a single function `casync()`.
+
+To use it, just replace your normal callback function
+```js
+let anAsyncFn=function(p,done){...};
+```
+with:
+```js
+let anAsyncFn=casync(function*(p,done,next){...});
+```
+And then you can use `yield` inside the function in order to basically `await` asyncronous operations. When the yield is encountered. The execution stops. When the `next` callback is called, the execution resumes. It's that simple.
+
+The wrapper provides the `next` function.
+This callback follows the normal convention of taking an error as first parameter and taking results in the parameters that follow. 
+```js
+function next(err, res...)
+```
+If there are no errors or exceptions (`err` is null) the results are returned and potentially assigned to a variabe at the line that yielded. If there are multiple arguments after the err parameter, they are passed in an array.
+
+If `err` is not null, this `err` is thrown from the `yield` line.
+
+```js
+let asyncawaitFn=casync(function*(t,done,next){
+	let data = yield fs.readFile('LICENSE',next);
+	//Thrown errors are passed to done callback so any of the two error styles would result in an exception at the yield line.
+	throw new Error("poo");
+	//done(new Error("poo"));return;//This would throw too.
+
+	done(null,t+"\n"+data);return;//never gets here
+});
+
+let anotherAsyncawaitFn=casync(function* (t,done,next) {
+	let fileWithTitle;
+	try{
+		fileWithTitle = yield asyncawaitFn(t,next);
+	}catch(err){
+		console.log("there was an error");//This will be printed whether asyncawaitFn throws or whether it calls done with a non-null first parameter.
+		console.log(err);
+	}
+    done(null,fileWithTitle);return;
+});
+
+anotherAsyncawaitFn("A Title",(err,res)=>{
+    console.log(res);
+});
+```
+
+Errors thrown in a casync wrapped function are caught and passed to it's done function, (the last callback before `next`, if there is one).
+```js
+let anotherAsyncawaitFn=casync(function* (t,done,next) {
+	let fileWithTitle;
+	fileWithTitle = yield asyncawaitFn(t,next);
+    throw "poo";
+    done(null,fileWithTitle);return;
+});
+
+anotherAsyncawaitFn("A Title",(err,res)=>{
+    if(err){
+        console.log(err);//logs "poo"
+    }
+});
+```
+
+
+Until this gets syntax sugared and integrated into the javascript spec, you'll need to use:
+```js
+anotherAsyncawaitFn=casync(function*(t,done,next) {
+```
+instead of
+```js
+anotherAsyncawaitFn=casync function(t,done) {
+```
+and
+```js
+let data = yield fs.readFile('LICENSE',next);
+```
+instead of
+```js
+let data = cawait fs.readFile('LICENSE');
+```
+
+It might be possible to further syntax sugar away the `done` functions too.
+
+When inquiring about getting this into the javascript spec I was told: We make no promise, which I took as a good sign.
+
+## License
+
+MIT
