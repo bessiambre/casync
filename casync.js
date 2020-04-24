@@ -3,7 +3,7 @@ exports.casync=function(fn) {
     return function(){
 		let args = Array.prototype.slice.call(arguments);
 		let doneCalled=false;
-		let done;
+		let done=null;
 		let next=(err,...cargs)=>{
 			if(err){
 				gen.throw(err);return;
@@ -14,7 +14,7 @@ exports.casync=function(fn) {
 				// 	done(null);//call done if the function reaches the end. (a but like a normal function returns at the end even if return is not explicitely called)
 				// }
 			}catch(err){
-				if(done){
+				if(done!==null){
 					done(err);
 				}else{
 					throw err;

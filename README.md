@@ -9,7 +9,7 @@ let addTitleToReadme=casync(function*(prepend,next){
 	console.log(prepend+"\n"+data);
 });
 
-addTitleToReadme("This is a Good Title");
+addTitleToReadme("#This is a Good Title");
 ```
 
 ## Installation
@@ -111,7 +111,7 @@ let data = cawait fs.readFile('LICENSE');
 
 It might be possible to further syntax sugar away the `done` functions too.
 
-When inquiring about getting this into the javascript spec I was told: We make no promise, which I took as a good sign.
+When inquiring about getting this into the javascript spec I was told: "We make no promise", which I took as a good sign.
 
 ## License
 
