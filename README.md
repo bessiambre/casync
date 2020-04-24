@@ -1,5 +1,5 @@
 # Callback async/await
-Async/await using [Plain Old Callbacks](https://caolan.github.io/async/v3/global.html#AsyncFunction) ([continuation passing style](https://medium.com/@b.essiambre/continuation-passing-style-patterns-for-javascript-5528449d3070?source=friends_link&sk=976fb25ca6c15eba3a4badcf55ba698e)).
+Promise free async/await using [plain old callbacks](https://caolan.github.io/async/v3/global.html#AsyncFunction) ([continuation passing style](https://medium.com/@b.essiambre/continuation-passing-style-patterns-for-javascript-5528449d3070?source=friends_link&sk=976fb25ca6c15eba3a4badcf55ba698e)).
 
 ```js
 const {casync} = require('casync');
@@ -22,12 +22,10 @@ $ npm install casync
 
   * Small and simple implementation (only 39 lines of code, no dependency).
   * Proper exception handling.
-  * Checks for repeated calls to done.
+  * Checks for repeated calls to done callback.
   * Promise free!
 
-casync is a simple generator function wrapper that allows you to pause execution when you call [asyncronous functions](https://caolan.github.io/async/v3/global.html#AsyncFunction) (with Plain Old Callbacks).
-
-This module currently contains a single function `casync()`.
+This module currently contains a single function: `casync` which is a simple generator function wrapper that allows you to pause execution when calling [asyncronous functions](https://caolan.github.io/async/v3/global.html#AsyncFunction).
 
 To use it, just replace your normal callback function
 ```js
@@ -39,20 +37,21 @@ let anAsyncFn=casync(function*(p,done,next){...});
 ```
 And then you can use `yield` inside the function in order to basically `await` asyncronous operations. When the yield is encountered. The execution stops. When the provided `next` callback is called, the execution resumes (til the next yield or the end of the function). It's that simple.
 
-The `next` callback follows the normal convention of taking an error as first parameter and taking results in the parameters that follow. 
+The `next` callback follows the normal convention of taking an error as the first parameter and taking returned results in the parameters that follow. 
 ```js
 function next(err, res...)
 ```
-If there are no errors or exceptions (`err` is passed null) the results are returned and can be assigned to a variabe at the line that yielded. If there are multiple arguments after the `err` parameter, they are passed as an array.
+If there are no errors or exceptions (null is passed to `err`), the results are returned and can be assigned to a variabe at the line that yielded. If there are multiple arguments after the `err` parameter, they are passed as an array.
 
 ## Error Handling
 
 If `err` is not null, this `err` is thrown from the `yield` line.
 
 ```js
-let asyncawaitFn=casync(function*(t,done,next){
+let addTitleToReadme=casync(function*(t,done,next){
 	let data = yield fs.readFile('LICENSE',next);
-	//Thrown errors are passed to done callback so any of the two error styles would result in an exception at the yield line.
+    //Thrown errors are passed to done callback so any of the two error
+    //styles would result in an exception at the yield line.
 	throw new Error("poo");
 	//done(new Error("poo"));return;//This would throw too.
 
@@ -62,7 +61,7 @@ let asyncawaitFn=casync(function*(t,done,next){
 let anotherAsyncawaitFn=casync(function* (t,done,next) {
 	let fileWithTitle;
 	try{
-		fileWithTitle = yield asyncawaitFn(t,next);
+		fileWithTitle = yield addTitleToReadme(t,next);
 	}catch(err){
 		console.log("there was an error");//This will be printed whether asyncawaitFn throws or whether it calls done with a non-null first parameter.
 		console.log(err);
@@ -79,7 +78,7 @@ Errors thrown in a casync wrapped function are caught and passed to it's done fu
 ```js
 let anotherAsyncawaitFn=casync(function* (t,done,next) {
 	let fileWithTitle;
-	fileWithTitle = yield asyncawaitFn(t,next);
+	fileWithTitle = yield addTitleToReadme(t,next);
     throw "poo";
     done(null,fileWithTitle);return;
 });
@@ -94,11 +93,11 @@ anotherAsyncawaitFn("A Title",(err,res)=>{
 
 Until this gets syntax sugared and integrated into the javascript spec, you'll need to use:
 ```js
-anotherAsyncawaitFn=casync(function*(t,done,next) {
+functionname=casync(function*(t,done,next) {
 ```
 instead of something like
 ```js
-anotherAsyncawaitFn=casync function(t,done) {
+functionname=casync function(t,done) {
 ```
 and
 ```js
@@ -111,7 +110,7 @@ let data = cawait fs.readFile('LICENSE');
 
 It might be possible to further syntax sugar away the `done` functions too.
 
-When inquiring about getting this into the javascript spec I was told: "We make no promise", which I took as a good sign.
+When inquiring about getting this into the javascript spec I was told: "We make no promise", which I took as a good sign. :-)
 
 ## License
 
