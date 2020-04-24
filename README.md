@@ -1,5 +1,5 @@
 # Callback async/await
-Promise free Async/await. [Why](https://medium.com/@b.essiambre/continuation-passing-style-patterns-for-javascript-5528449d3070?source=friends_link&sk=976fb25ca6c15eba3a4badcf55ba698e) wrap your function calls in state machines.
+Async/await using [Plain Old Callbacks](https://caolan.github.io/async/v3/global.html#AsyncFunction) ([continuation passing style](https://medium.com/@b.essiambre/continuation-passing-style-patterns-for-javascript-5528449d3070?source=friends_link&sk=976fb25ca6c15eba3a4badcf55ba698e)).
 
 ```js
 const {casync} = require('casync');
@@ -22,10 +22,10 @@ $ npm install casync
 
   * Small and simple implementation (only 39 lines of code, no dependency).
   * Proper exception handling.
-  * Checks for calling for repeated calls to done
+  * Checks for repeated calls to done.
   * Promise free!
 
-It's a simple generator function wrapper that allows you to pause execution when you call [asyncronous functions](https://caolan.github.io/async/v3/global.html#AsyncFunction).
+It's a simple generator function wrapper that allows you to pause execution when you call [asyncronous functions](https://caolan.github.io/async/v3/global.html#AsyncFunction) (with Plain Old Callbacks).
 
 This library currently contains a single function `casync()`.
 
@@ -44,7 +44,9 @@ This callback follows the normal convention of taking an error as first paramete
 ```js
 function next(err, res...)
 ```
-If there are no errors or exceptions (`err` is null) the results are returned and potentially assigned to a variabe at the line that yielded. If there are multiple arguments after the err parameter, they are passed in an array.
+If there are no errors or exceptions (`err` is null) the results are returned and potentially assigned to a variabe at the line that yielded. If there are multiple arguments after the `err` parameter, they are passed in an array.
+
+## Error Handling
 
 If `err` is not null, this `err` is thrown from the `yield` line.
 
@@ -89,13 +91,13 @@ anotherAsyncawaitFn("A Title",(err,res)=>{
     }
 });
 ```
-
+## Future
 
 Until this gets syntax sugared and integrated into the javascript spec, you'll need to use:
 ```js
 anotherAsyncawaitFn=casync(function*(t,done,next) {
 ```
-instead of
+instead of something like
 ```js
 anotherAsyncawaitFn=casync function(t,done) {
 ```
