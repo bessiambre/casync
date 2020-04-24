@@ -25,9 +25,9 @@ $ npm install casync
   * Checks for repeated calls to done.
   * Promise free!
 
-It's a simple generator function wrapper that allows you to pause execution when you call [asyncronous functions](https://caolan.github.io/async/v3/global.html#AsyncFunction) (with Plain Old Callbacks).
+casync is a simple generator function wrapper that allows you to pause execution when you call [asyncronous functions](https://caolan.github.io/async/v3/global.html#AsyncFunction) (with Plain Old Callbacks).
 
-This library currently contains a single function `casync()`.
+This module currently contains a single function `casync()`.
 
 To use it, just replace your normal callback function
 ```js
@@ -37,14 +37,13 @@ with:
 ```js
 let anAsyncFn=casync(function*(p,done,next){...});
 ```
-And then you can use `yield` inside the function in order to basically `await` asyncronous operations. When the yield is encountered. The execution stops. When the `next` callback is called, the execution resumes. It's that simple.
+And then you can use `yield` inside the function in order to basically `await` asyncronous operations. When the yield is encountered. The execution stops. When the provided `next` callback is called, the execution resumes (til the next yield or the end of the function). It's that simple.
 
-The wrapper provides the `next` function.
-This callback follows the normal convention of taking an error as first parameter and taking results in the parameters that follow. 
+The `next` callback follows the normal convention of taking an error as first parameter and taking results in the parameters that follow. 
 ```js
 function next(err, res...)
 ```
-If there are no errors or exceptions (`err` is null) the results are returned and potentially assigned to a variabe at the line that yielded. If there are multiple arguments after the `err` parameter, they are passed in an array.
+If there are no errors or exceptions (`err` is passed null) the results are returned and can be assigned to a variabe at the line that yielded. If there are multiple arguments after the `err` parameter, they are passed as an array.
 
 ## Error Handling
 
