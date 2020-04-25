@@ -23,6 +23,7 @@ $ npm install casync
   * Small and simple implementation (only 39 lines of code, no dependency).
   * Proper exception handling.
   * Checks for repeated calls to done callback.
+  * Mare than 2x as fast as native async/await.
   * Promise free!
 
 This module currently contains a single function: `casync` which is a simple generator function wrapper that allows you to pause execution when calling [asyncronous functions](https://caolan.github.io/async/v3/global.html#AsyncFunction).
@@ -89,6 +90,47 @@ anotherAsyncawaitFn("A Title",(err,res)=>{
     }
 });
 ```
+## Performance
+
+```js
+function resolveAfterSetTimeout() {
+	return new Promise(resolve => {
+		process.nextTick(() => {
+			resolve('resolved');
+	  	});
+	});
+}
+async function asyncCall() {
+	let startT=new Date().getTime();
+	for(let i=0;i<100000;i++){
+		const result = await resolveAfterSetTimeout();
+	}
+	let endT=new Date().getTime();
+	console.log(`${endT-startT}ms (async)`);//81ms
+}
+asyncCall();
+```
+
+
+
+```js
+function callBackAfterSetTimeout(done){
+	process.nextTick(
+		  ()=>{done();}
+	);
+}
+let casyncCall=casync(function*(done,next){
+	startT=new Date().getTime();
+	for(let i=0;i<100000;i++){
+		const result= yield callBackAfterSetTimeout(next);
+	}
+	endT=new Date().getTime();
+	console.log(`${endT-startT}ms (casync)`);//31ms
+});
+casyncCall(()=>{});
+```
+2.6x faster than native on my laptop (node v8.10.0)
+
 ## Future
 
 Until this gets syntax sugared and integrated into the javascript spec, you'll need to use:
