@@ -214,8 +214,7 @@ And the compiler would read this as:
 getTheNews = casync(function*(x, done, next)){
     let news=yield fetchWebPage('https://news.ycombinator.com',next);
     done(null,news);return;
-
-}
+});
 ```
 
 This woud provide very straightforward asyncronous code with no extra state machines or caching layers so you would get best performance.
