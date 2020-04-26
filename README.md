@@ -219,6 +219,8 @@ getTheNews = casync(function*(x, done, next)){
 
 This would provide very straightforward asynchronous code with no extra state machines or caching layers so you would get best performance.
 
+To me this would completely solve the asynchronous programming problem, allowing you to program in normal direct style all the time without relying on weird crutches like promises.
+
 Of course, until this gets syntax sugared and integrated into the javascript spec, you'll need to use the longer form.
 
 When inquiring about getting it into the javascript spec I was told: "We make no promise", which I took as a good sign. :-)
