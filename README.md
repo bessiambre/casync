@@ -172,13 +172,13 @@ function asynchronous(x,done){
 }
 ```
 To transform a direct style function to CPS, you just append a done parameter and replace `return result;` statements with `done(err,result);return;`
-Compilers sometimes do this automatically with your code since some optimizations can only be done in CPS form. Calls to functions can similarly be transformed, although it can create recursively contained scopes and potentially a lot of brackets (a problem that casync/await solves).
+Compilers sometimes do this automatically with your code since some optimizations can only be done in CPS form. Calls to functions can also be transformed, although it's a recursive algorithms that can create russian dolls of scopes and potentially a lot of brackets (a problem that casync/await solves). The one to one mapping between direct style and CPS is however, a key feature, paving the way for syntax sugaring the CPS away. More on that bellow.
 
 One aggravating factor that results in 'callback hell' is that javascript makes it really easy to stray off of the well structured single inline callback pattern. You can easily pass named functions, or create functions that take multiple callbacks. Javascript's power is sometimes its drawback. Beginners can easily shoot themselves in the foot.
 
-There may be a bit too much flexibility in what gets passed to asynchronous functions (maybe language level constructs could make the single anonymous inline functions mandatory) but at least with CPS, the callback is required right there where you call the function.
+There may be a bit too much flexibility in what gets passed to asynchronous functions but at least with CPS, the callback is required right there where you call the function.
 
-Promises are a caching layer for function results and errors along with a state machine to manage this caching layer. Part of it might promote better code structure mostly because of better documentation and the 'then' keyword. However, on top of the excess flexibility brought by callbacks on the calling side, promises add more flexibility and extra ways to shoot at your feet on the returning side.  It allows passing the next point of execution flow around to be added later. Passing promises around can lead to convoluted code.
+Promises are a caching layer for function results and errors along with a state machine to manage this caching layer. Part of the promise pattern might promote better code structure mostly because of better documentation and the 'then' keyword. However, on top of the excess flexibility brought by callbacks on the calling side, promises add more flexibility and extra ways to shoot at your feet on the returning side.  It allows passing the next point of execution flow around to be added later. Passing promises around can lead to convoluted code.
 
 99% of the time, you just pass an anonymous inline function to promises `promiseReturning().then(()=>{...})`. You don't make use of the caching layer and state machine. They're just deadweight computation. Calling asynchronous(()=>{...}) would give the exact same result with less computation.
 
@@ -195,9 +195,9 @@ let arrayOfResults=yield async.parallel([
 
 ## Future
 
-Casync/await gets you better syntax with less scopes and brackets and avoids the [pitfals]((https://medium.com/@b.essiambre/continuation-passing-style-patterns-for-javascript-5528449d3070?source=friends_link&sk=976fb25ca6c15eba3a4badcf55ba698e)) of promises. This is almost best of both worlds and maybe good enough.
+Casync/await gets you better syntax with less scopes and brackets and avoids the [pitfals]((https://medium.com/@b.essiambre/continuation-passing-style-patterns-for-javascript-5528449d3070?source=friends_link&sk=976fb25ca6c15eba3a4badcf55ba698e)) of promises. This is almost best of both worlds and maybe good enough. But here is where the one to one mapping between direct style and CPS is key.
 
-But also, what's nice with CPS structured code, is that because it's a simple transform away from regular direct style functions, it would be fairly easy to create language level syntax sugar that does all the work for you.
+Because CPS structured code is a simple transform away from regular direct style functions, it would be fairly easy to create language level syntax sugar that does all the work for you.
 
 One day you might be able to write.
 
@@ -217,9 +217,7 @@ getTheNews = casync(function*(x, done, next)){
 });
 ```
 
-This would provide very straightforward asynchronous code with no extra state machines or caching layers so you would get best performance.
-
-To me this would completely solve the asynchronous programming problem, allowing you to program in normal direct style all the time without relying on weird crutches like promises.
+This would provide very straightforward asynchronous code without extra state machines or caching layers so you would get the best performance. Casync/await makes the transform very straightforward, removing the issue of recursively nested function scopes and excessive brackets. To me this would completely solve the asynchronous programming problem, allowing you to program in normal direct style all the time just like with non-asynchronous code.
 
 Of course, until this gets syntax sugared and integrated into the javascript spec, you'll need to use the longer form.
 
