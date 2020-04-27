@@ -5,22 +5,33 @@ exports.casync=function(fn,strict=true) {
 		let doneCalled=false;
 		let doneAutoCalled=false;
 		let done=null;
-		let next=(err,...cargs)=>{
+		let genRunning=false;
+		let doNext=(err,cargs)=>{
 			if(err){
 				gen.throw(err);return;
 			}
 			try{
+				genRunning=true;
 				let v=gen.next((cargs.length === 0?undefined:(cargs.length===1?cargs[0]:cargs)));
+				genRunning=false;
 				if(strict && v.done && !doneCalled){
 					doneAutoCalled=true;
 					done(null);//call done if the function reaches the end. (a bit like a normal function returns at the end even if return is not explicitely called)
 				}
 			}catch(err){
+				genRunning=false;
 				if(done!==null){
 					done(err);
 				}else{
 					throw err;
 				}
+			}
+		};
+		let next=(err,...cargs)=>{
+			if(genRunning){
+				process.nextTick(()=>{doNext(err,cargs);});//need to do nextTick in case the async function was not truly async and we didn't get a chance to yield yet.
+			}else{
+				doNext(err,cargs);//no nextTick here for better performance.
 			}
 		};
 		if(typeof args[args.length-1] === "function"){//if last argument is a function assume continuation passing style
