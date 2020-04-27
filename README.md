@@ -172,7 +172,7 @@ function asynchronous(x,done){
 }
 ```
 To transform a direct style function to CPS, you just append a done parameter and replace `return result;` statements with `done(err,result);return;`
-Compilers sometimes do this automatically with your code since some optimizations can only be done in CPS form. Calls to functions can also be transformed, although it's a recursive algorithms that can create russian dolls of scopes and potentially a lot of brackets (a problem that casync/await solves). The one to one mapping between direct style and CPS is however, a key feature, paving the way for syntax sugaring the CPS away. More on that bellow.
+Compilers sometimes do this automatically with your code since some optimizations can only be done in CPS form. Calls to functions can also be transformed, although it's a recursive algorithms that can create russian dolls of scopes and potentially a lot of brackets (a problem that casync/await solves). The one to one mapping between direct style and CPS is a key feature, paving the way for syntax sugaring the CPS away. More on that bellow.
 
 One aggravating factor that results in 'callback hell' is that javascript makes it really easy to stray off of the well structured single inline callback pattern. You can easily pass named functions, or create functions that take multiple callbacks. Javascript's power is sometimes its drawback. Beginners can easily shoot themselves in the foot.
 
@@ -195,7 +195,7 @@ let arrayOfResults=yield async.parallel([
 
 ## Future
 
-Casync/await gets you better syntax with less scopes and brackets and avoids the [pitfals]((https://medium.com/@b.essiambre/continuation-passing-style-patterns-for-javascript-5528449d3070?source=friends_link&sk=976fb25ca6c15eba3a4badcf55ba698e)) of promises. This is almost best of both worlds and maybe good enough. But here is where the one to one mapping between direct style and CPS is key.
+Casync/await gets you better syntax with less scopes and brackets and avoids the [pitfalls](https://medium.com/@b.essiambre/continuation-passing-style-patterns-for-javascript-5528449d3070?source=friends_link&sk=976fb25ca6c15eba3a4badcf55ba698e) of promises. This is almost best of both worlds and maybe good enough. But here is where the one to one mapping between direct style and CPS is key.
 
 Because CPS structured code is a simple transform away from regular direct style functions, it would be fairly easy to create language level syntax sugar that does all the work for you.
 
