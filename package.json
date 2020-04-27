@@ -19,5 +19,6 @@
   },
   "devDependencies": {
     "mocha": "^7.1.1"
-  }
+  },
+  "repository": "github:bessiambre/casync"
 }
