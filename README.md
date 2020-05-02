@@ -217,7 +217,8 @@ getTheNews = casync(function*(x, done, next)){
 });
 ```
 
-This would provide very straightforward asynchronous code without extra state machines or caching layers so you would get the best performance. Casync/await makes the transform very straightforward, removing the issue of recursively nested function scopes and excessive brackets. To me this would completely solve the asynchronous programming problem, allowing you to program in normal direct style all the time just like with non-asynchronous code.
+This would provide very straightforward asynchronous code without extra state machines or caching layers, with better encapsulation (no promises are created to be passed around) and best performance.
+Casync/await makes the transform very straightforward, removing the issue of recursively nested function scopes and excessive brackets. To me this would completely solve the asynchronous programming problem, allowing you to program in normal direct style all the time just like with non-asynchronous code.
 
 Of course, until this gets syntax sugared and integrated into the javascript spec, you'll need to use the longer form.
 
