@@ -70,7 +70,7 @@ let anotherAsyncawaitFn=casync(function* (t,done,next) {
     done(null,fileWithTitle);return;
 });
 
-anotherAsyncawaitFn("A Title",(err,res)=>{
+anotherAsyncawaitFn("A Title",/*then*/(err,res)=>{
     console.log(res);
 });
 ```
@@ -84,7 +84,7 @@ let anotherAsyncawaitFn=casync(function* (t,done,next) {
     done(null,fileWithTitle);return;
 });
 
-anotherAsyncawaitFn("A Title",(err,res)=>{
+anotherAsyncawaitFn("A Title",/*then*/(err,res)=>{
     if(err){
         console.log(err);//logs "poo"
     }
