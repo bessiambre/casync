@@ -1,5 +1,5 @@
 # Callback async/await
-Promise free, fast async/await using [plain old callbacks](https://caolan.github.io/async/v3/global.html#AsyncFunction) ([continuation passing style](https://medium.com/@b.essiambre/continuation-passing-style-patterns-for-javascript-5528449d3070?source=friends_link&sk=976fb25ca6c15eba3a4badcf55ba698e)).
+Promise free, fast, simplified async/await using [plain old callbacks](https://caolan.github.io/async/v3/global.html#AsyncFunction) ([continuation passing style](https://medium.com/@b.essiambre/continuation-passing-style-patterns-for-javascript-5528449d3070?source=friends_link&sk=976fb25ca6c15eba3a4badcf55ba698e)).
 
 ```js
 const {casync} = require('casync');
@@ -191,6 +191,14 @@ let arrayOfResults=yield async.parallel([
     async.apply(fs.writeFile, 'testfile1', 'test1'),
     async.apply(fs.writeFile, 'testfile2', 'test2')
 ],next);
+```
+
+to use a library lacking proper callback support
+```js
+	const { callbackify } = require("util");//included in nodejs, no module to install
+	...
+	let res = yield callbackify(promiseReturningFn)(param,next);
+	...
 ```
 
 ## Future
