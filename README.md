@@ -193,12 +193,19 @@ let arrayOfResults=yield async.parallel([
 ],next);
 ```
 
-to use a library lacking proper callback support
+to use a library lacking proper callback support:
 ```js
 	const { callbackify } = require("util");//included in nodejs, no module to install
 	...
 	let res = yield callbackify(promiseReturningFn)(param,next);
 	...
+```
+
+or on a method that uses the `this` pointer:
+
+```js
+	obj.promiseReturningMethodCb=callbackify(obj.promiseReturningMethod);
+	let res = yield obj.promiseReturningMethodCb(param,next);
 ```
 
 ## Future
