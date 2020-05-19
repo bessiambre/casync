@@ -137,7 +137,7 @@ I got questions has to why you would do this. People seem to allude to a state o
 
 I think there's a reason for these bad memories which is that there is little good information out there on how to structure asynchronous code with callbacks. A secondary reason might have been the dislike of too many scopes and brackets but this problem is completely solved with casync/await.
 
-Proper continuation passing style (CPS) code always has a single callback at the end of functions that is called when the work is done (calling this `done` function is analogous to returning in a direct style function). 
+Proper continuation passing style (CPS) functions always takes a single callback at the end of function parameters that is called when the work is done (calling this `done` function is analogous to returning in a direct style function). 
 
 ```js
 function asyncFn(x,done){
@@ -172,13 +172,13 @@ function asynchronous(x,done){
 }
 ```
 To transform a direct style function to CPS, you just append a done parameter and replace `return result;` statements with `done(err,result);return;`
-Compilers sometimes do this automatically with your code since some optimizations can only be done in CPS form. Calls to functions can also be transformed, although it's a recursive algorithms that can create russian dolls of scopes and potentially a lot of brackets (a problem that casync/await solves). The one to one mapping between direct style and CPS is a key feature, paving the way for syntax sugaring the CPS away. More on that bellow.
+Compilers sometimes do this automatically with your code since some optimizations can only be performed in CPS form. Calls to functions can also be transformed, although it's a recursive algorithm that can create russian dolls of scopes and potentially a lot of brackets (a problem that casync/await solves). The one to one mapping between direct style and CPS is a key feature, paving the way for syntax sugaring the CPS away. More on that bellow.
 
-One aggravating factor that results in 'callback hell' is that javascript makes it really easy to stray off of the well structured single inline callback pattern. You can easily pass named functions, or create functions that take multiple callbacks. Javascript's power is sometimes its drawback. Beginners can easily shoot themselves in the foot.
+One aggravating factor that results in 'callback hell' is that javascript makes it really easy to stray off of the well structured single inline callback pattern. You can easily pass named functions, or create functions that take multiple callbacks. Javascript's power is sometimes its main drawback. Beginners can easily shoot themselves in the foot.
 
 There may be a bit too much flexibility in what gets passed to asynchronous functions but at least with CPS, the callback is required right there where you call the function.
 
-Promises are a caching layer for function results and errors along with a state machine to manage this caching layer. Part of the promise pattern might promote better code structure mostly because of better documentation and the 'then' keyword. However, on top of the excess flexibility brought by callbacks on the calling side, promises add more flexibility and extra ways to shoot at your feet on the returning side.  It allows passing the next point of execution flow around to be added later. Passing promises around can lead to convoluted code.
+Promises are a caching layer for function results and errors along with a state machine to manage this caching layer. Part of the promise pattern might promote better code structure mostly because of better documentation and the 'then' keyword. However, on top of the excess flexibility brought by callbacks on the calling side, promises add further flexibility and extra ways to shoot at your feet on the returning side.  It allows passing the next point of execution flow around to be added later and elsewhere. Passing promises around can lead to a convoluted execution flow.
 
 99% of the time, you just pass an anonymous inline function to promises `promiseReturning().then(()=>{...})`. You don't make use of the caching layer and state machine. They're just deadweight computation. Calling asynchronous(()=>{...}) would give the exact same result with less computation.
 
