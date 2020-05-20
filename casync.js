@@ -16,7 +16,7 @@ exports.casync=function(fn,strict=true) {
 				genRunning=false;
 				if(strict && v.done && !doneCalled){
 					doneAutoCalled=true;
-					done(null);//call done if the function reaches the end. (a bit like a normal function returns at the end even if return is not explicitely called)
+					done(null,v.value);//call done if the function reaches the end. (a bit like a normal function returns at the end even if return is not explicitely called)
 				}
 			}catch(err){
 				genRunning=false;
@@ -46,7 +46,7 @@ exports.casync=function(fn,strict=true) {
 			}
 			args[args.length-1]=done;
 		}
-		args.push(next);
+		args[fn.length-1]=next;
 		let gen = fn.apply(this, args);
 		next(null);
 	};
