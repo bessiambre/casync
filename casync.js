@@ -34,8 +34,8 @@ exports.casync=function(fn,strict=true) {
 				doNext(err,cargs);//no nextTick here for better performance.
 			}
 		};
-		if(typeof args[args.length-1] === "function"){//if last argument is a function assume continuation passing style
-			let oldDone=args[args.length-1];
+		if(typeof args[fn.length-2] === "function"){//if last argument is a function assume continuation passing style
+			let oldDone=args[fn.length-2];
 			done=function(){
 				if(doneCalled){
 					throw new Error(`Done called more than once.${(doneAutoCalled?"Done was called automatically when casync-ed function reached the end. If you don't want this behavior you may pass strict=false as the second parameter of casync(fn,strict)":'')}`);
@@ -43,8 +43,8 @@ exports.casync=function(fn,strict=true) {
 					doneCalled=true;
 					oldDone.apply(this, arguments);
 				}
-			}
-			args[args.length-1]=done;
+			};
+			args[fn.length-2]=done;
 		}
 		args[fn.length-1]=next;
 		let gen = fn.apply(this, args);

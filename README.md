@@ -4,14 +4,28 @@ Promise free, fast, simplified async/await using [plain old callbacks](https://c
 ```js
 const {casync} = require('casync');
 
-let addTitleToReadme=casync(function*(prepend,next){
+let addTitleToReadme=casync(function*(prepend,done,next){
 	let data = yield fs.readFile('README.md',next);
-	console.log(prepend+"\n"+data);
+	return prepend+"\n"+data;
 });
-
-addTitleToReadme("#This is a Good Title");
 ```
 
+From another casync function:
+
+```js
+...
+let readmeWithTitle=addTitleToReadme("#This is a Good Title",next);
+console.log(readmeWithTitle);
+```
+
+Or from outside a casync function:
+
+```js
+addTitleToReadme("#This is a Good Title",(err,readmeWithTitle)=>{
+	console.log(err || res);
+});
+
+```
 ## Installation
 
 ```bash
@@ -24,6 +38,7 @@ $ npm install casync
   * Proper exception handling.
   * Checks for repeated calls to done callback.
   * More than 2x as fast as native async/await.
+  * Returned value or thrown errors passed to done callback
   * Promise free!
 
 This module currently contains a single function: `casync` which is a simple generator function wrapper that allows you to pause execution when calling [asynchronous functions](https://caolan.github.io/async/v3/global.html#AsyncFunction).
@@ -36,13 +51,13 @@ with:
 ```js
 let anAsyncFn=casync(function*(p,done,next){...});
 ```
-And then you can use `yield` inside the function in order to basically `await` asynchronous operations. When the yield is encountered. The execution stops. When the provided `next` callback is called, the execution resumes (til the next yield or the end of the function). It's that simple.
+And then you can use `yield` inside the function in order to basically `await` asynchronous operations. When the yield is encountered. The execution stops. When the provided `next` callback is called, the execution resumes (til the next yield or the end of the function). It's that simple. If you `return` a result, it will be passed to the `done` callback (the last callback before `next`, if there is one), effectively transforming `return res;` statements into `done(null,res);return;`.
 
 The `next` callback follows the normal convention of taking an error as the first parameter and taking returned results in the parameters that follow. 
 ```js
 function next(err, res...)
 ```
-If there are no errors or exceptions (null is passed to `err`), the results are returned and can be assigned to a variabe at the line that yielded. If there are multiple arguments after the `err` parameter, they are passed as an array.
+If there are no errors or exceptions (if null is passed to `err`), the results are returned and can be assigned to a variabe at the line that yielded. If there are multiple arguments after the `err` parameter, they are passed as an array.
 
 ## Error Handling
 
@@ -51,12 +66,12 @@ If `err` is not null, this `err` is thrown from the `yield` line.
 ```js
 let addTitleToReadme=casync(function*(t,done,next){
 	let data = yield fs.readFile('LICENSE',next);
-    //Thrown errors are passed to done callback so any of the two error
-    //styles would result in an exception at the yield line.
+    //Thrown errors are passed to done callback (and re-thrown at the caller yield line) 
+    //so any of the two error styles would result in an exception at the yield line.
 	throw new Error("poo");
 	//done(new Error("poo"));return;//This would throw too.
 
-	done(null,t+"\n"+data);return;//never gets here
+	return t+"\n"+data;//never gets here
 });
 
 let anotherAsyncawaitFn=casync(function* (t,done,next) {
@@ -67,21 +82,21 @@ let anotherAsyncawaitFn=casync(function* (t,done,next) {
 		console.log("there was an error");//This will be printed whether asyncawaitFn throws or whether it calls done with a non-null first parameter.
 		console.log(err);
 	}
-    done(null,fileWithTitle);return;
+    return fileWithTitle;
 });
 
 anotherAsyncawaitFn("A Title",/*then*/(err,res)=>{
-    console.log(res);
+    console.log(err || res);
 });
 ```
 
-Errors thrown in a casync wrapped function are caught and passed to it's done function, (the last callback before `next`, if there is one).
+Errors thrown in a casync wrapped function are caught and passed to it's done function.
 ```js
 let anotherAsyncawaitFn=casync(function* (t,done,next) {
 	let fileWithTitle;
 	fileWithTitle = yield addTitleToReadme(t,next);
     throw "poo";
-    done(null,fileWithTitle);return;
+    return fileWithTitle;
 });
 
 anotherAsyncawaitFn("A Title",/*then*/(err,res)=>{
@@ -228,7 +243,7 @@ And the compiler would read this as:
 ```js
 getTheNews = casync(function*(x, done, next)){
     let news=yield fetchWebPage('https://news.ycombinator.com',next);
-    done(null,news);return;
+    return news;
 });
 ```
 
