@@ -22,7 +22,7 @@ Or from outside a casync function:
 
 ```js
 addTitleToReadme("#This is a Good Title",(err,readmeWithTitle)=>{
-	console.log(err || res);
+	console.log(err || readmeWithTitle);
 });
 
 ```
@@ -36,7 +36,6 @@ $ npm install casync
 
   * Small and simple implementation (only 53 lines of code, no dependency).
   * Proper exception handling.
-  * Checks for repeated calls to done callback.
   * More than 2x as fast as native async/await.
   * Returned value or thrown errors passed to done callback
   * Promise free!
@@ -66,10 +65,11 @@ If `err` is not null, this `err` is thrown from the `yield` line.
 ```js
 let addTitleToReadme=casync(function*(t,done,next){
 	let data = yield fs.readFile('LICENSE',next);
-    //Thrown errors are passed to done callback (and re-thrown at the caller yield line) 
-    //so any of the two error styles would result in an exception at the yield line.
-	throw new Error("poo");
-	//done(new Error("poo"));return;//This would throw too.
+	//Thrown errors inside a casync function are also passed to the done callback
+	//(and re-thrown at the caller yield line) so any of the two error styles
+    //would result in an exception at the yield line.
+	throw new Error("poo");//This is automatically passed to done calback and thrown from yield line
+	done(new Error("poo"));return;//This would throw too.
 
 	return t+"\n"+data;//never gets here
 });
@@ -90,21 +90,6 @@ anotherAsyncawaitFn("A Title",/*then*/(err,res)=>{
 });
 ```
 
-Errors thrown in a casync wrapped function are caught and passed to it's done function.
-```js
-let anotherAsyncawaitFn=casync(function* (t,done,next) {
-	let fileWithTitle;
-	fileWithTitle = yield addTitleToReadme(t,next);
-    throw "poo";
-    return fileWithTitle;
-});
-
-anotherAsyncawaitFn("A Title",/*then*/(err,res)=>{
-    if(err){
-        console.log(err);//logs "poo"
-    }
-});
-```
 ## Performance
 
 ```js
@@ -144,7 +129,7 @@ let casyncCall=casync(function*(done,next){
 });
 casyncCall(()=>{});
 ```
-2.6x faster than native on my laptop (node v8.10.0)
+2.1x faster than native on my laptop (node v8.10.0)
 
 ## Why?
 
