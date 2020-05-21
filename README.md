@@ -50,7 +50,7 @@ with:
 ```js
 let anAsyncFn=casync(function*(p,done,next){...});
 ```
-And then you can use `yield` inside the function in order to basically `await` asynchronous operations. When the yield is encountered. The execution stops. When the provided `next` callback is called, the execution resumes (til the next yield or the end of the function). It's that simple. If you `return` a result, it will be passed to the `done` callback (the last callback before `next`, if there is one), effectively transforming `return res;` statements into `done(null,res);return;`.
+And then you can use `yield` inside the function in order to basically `await` asynchronous operations. When the yield is encountered, the execution stops. When the provided `next` callback is called, the execution resumes (til the next yield or the end of the function). It's that simple. If you `return` a result, it will be passed to the `done` callback (the last callback before `next`, if there is one), effectively transforming `return res;` statements into `done(null,res);return;`.
 
 The `next` callback follows the normal convention of taking an error as the first parameter and taking returned results in the parameters that follow. 
 ```js
@@ -206,6 +206,12 @@ or on a method that uses the `this` pointer:
 ```js
 	obj.promiseReturningMethodCb=callbackify(obj.promiseReturningMethod);
 	let res = yield obj.promiseReturningMethodCb(param,next);
+```
+
+To use in browsers download casync.js and then:
+
+```html
+<script src="casync.js"></script>
 ```
 
 ## Future

@@ -15,6 +15,14 @@ describe('casync', function() {
 		anAsyncawaitFn(2,(err,res)=>done(res!==2));
 	});
 
+	it('should return passed val 2', function(done) {
+		let anAsyncawaitFn=casync(function*(val,done,next){
+			yield timeoutSet(20,next);
+			return val;
+		});
+		anAsyncawaitFn(2,(err,res)=>done(res!==2));
+	});
+
 	it('Works with non truly async function', function(done) {
 		let anAsyncawaitFn=casync(function*(val,done,next){
 			yield next(null,val);

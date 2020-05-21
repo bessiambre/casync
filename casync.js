@@ -1,5 +1,5 @@
 "use strict";
-exports.casync=function(fn,strict=true) {
+let casync=function(fn,strict=true) {
     return function(){
 		let args = Array.prototype.slice.call(arguments);
 		let doneCalled=false;
@@ -51,3 +51,4 @@ exports.casync=function(fn,strict=true) {
 		next(null);
 	};
 };
+if((typeof process !== 'undefined') && (process.release.name === 'node')){exports.casync=casync;}
