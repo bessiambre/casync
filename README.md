@@ -14,7 +14,7 @@ From another casync function:
 
 ```js
 ...
-let readmeWithTitle=addTitleToReadme("#This is a Good Title",next);
+let readmeWithTitle=yield addTitleToReadme("#This is a Good Title",next);
 console.log(readmeWithTitle);
 ```
 
