@@ -34,7 +34,7 @@ $ npm install casync
 
 ## Features
 
-  * Small and simple implementation (only 53 lines of code, no dependency).
+  * Small and simple implementation (only 54 lines of code, no dependency).
   * Proper exception handling.
   * More than 2x as fast as native async/await.
   * Returned value or thrown errors passed to done callback
@@ -50,26 +50,25 @@ with:
 ```js
 let anAsyncFn=casync(function*(p,done,next){...});
 ```
-And then you can use `yield` inside the function in order to basically `await` asynchronous operations. When the yield is encountered, the execution stops. When the provided `next` callback is called, the execution resumes (til the next yield or the end of the function). It's that simple. If you `return` a result, it will be passed to the `done` callback (the last callback before `next`, if there is one), effectively transforming `return res;` statements into `done(null,res);return;`.
+And then you can use `yield` inside the function in order to basically `await` asynchronous operations. When the yield is encountered, the execution stops. When the provided `next` callback is called, the execution resumes (til the next yield or the end of the function). Within a casync function, a `return` statement's return value will be automatically passed to the function's `done` callback (the last callback passed to the function before `next` in the list of arguments, if there is one), effectively transforming `return res;` statements into `done(null,res);return;`.
 
-The `next` callback follows the normal convention of taking an error as the first parameter and taking returned results in the parameters that follow. 
+The `next` callback which is normally passed to an asynchronous functions from a yield line, follows the normal convention of taking an error as the first parameter and taking returned results in the parameters that follow. 
 ```js
 function next(err, res...)
 ```
-If there are no errors or exceptions (if null is passed to `err`), the results are returned and can be assigned to a variabe at the line that yielded. If there are multiple arguments after the `err` parameter, they are passed as an array.
+If the asynchronous call finishes with no errors or exceptions (if null is passed as `err`), the results are returned by the `yield` statement and can be assigned to a variabe. If there are multiple arguments after the `err` parameter, they are passed as an array.
 
 ## Error Handling
 
-If `err` is not null, this `err` is thrown from the `yield` line.
+If `next` is passed an `err` instead, this `err` is thrown from the `yield` line. Thrown errors inside a casync function are also automatically caught and passed to its done callback (`next` if called from another casync function) and potentially re-thrown at the caller yield line.
 
 ```js
 let addTitleToReadme=casync(function*(t,done,next){
 	let data = yield fs.readFile('LICENSE',next);
-	//Thrown errors inside a casync function are also passed to the done callback
-	//(and re-thrown at the caller yield line) so any of the two error styles
+	//any of the two error styles
     //would result in an exception at the yield line.
 	throw new Error("poo");//This is automatically passed to done calback and thrown from yield line
-	done(new Error("poo"));return;//This would throw too.
+	done(new Error("poo"));return;//This would throw at the yield line too.
 
 	return t+"\n"+data;//never gets here
 });
@@ -129,7 +128,7 @@ let casyncCall=casync(function*(done,next){
 });
 casyncCall(()=>{});
 ```
-2.1x faster than native on my laptop (node v8.10.0)
+2.6x faster than native on my laptop (node v8.10.0)
 
 ## Why?
 
