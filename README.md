@@ -131,9 +131,9 @@ casyncCall(()=>{});
 
 ## Why?
 
-I got questions has to why you would do this. People seem to allude to a state of 'callback hell' that they may have experienced in the past.
+I got questions as to why you would do this. Some people allude to a state of 'callback hell' that they may have experienced in the past.
 
-I think there's a reason for these bad memories which is that there is little good information out there on how to structure asynchronous code with callbacks. A secondary reason might have been the dislike of too many scopes and brackets but this problem is completely solved with casync/await.
+A reason for these bad memories may be that there is little good information out there on how to structure asynchronous code with callbacks. A secondary reason might have been the dislike of too many scopes and brackets. This later problem is completely solved with casync/await.
 
 Proper continuation passing style (CPS) functions always takes a single callback at the end of function parameters that is called when the work is done (calling this `done` function is analogous to returning in a direct style function). 
 
@@ -152,7 +152,7 @@ asyncFn(x,/*then*/(err, res)=>{
 });
 ```
 
-I'm sure just the fact that promises use the 'then' function name helps understand the intended flow. I think maybe the /* then */ comment should be included in any callback based asynchronous tutorial to help people new to the subject understand the pattern. With casync you pass `next` and the "anonymous function" is just the next line.
+I'm sure just the fact that promises use the 'then' function name helps understand the intended flow. I think maybe the /* then */ comment should be included in any callback based asynchronous tutorial to help understand the pattern. With casync you pass `next` and the "anonymous function" is just the next line.
 
 Adding the `done` callback as the last parameter is important for psychological reasons. When you call the function, you can put a newline at the start of the callback body and execution reads from top to bottom.
 
@@ -172,13 +172,13 @@ function asynchronous(x,done){
 To transform a direct style function to CPS, you just append a done parameter and replace `return result;` statements with `done(err,result);return;`
 Compilers sometimes do this automatically with your code since some optimizations can only be performed in CPS form. Calls to functions can also be transformed, although it's a recursive algorithm that can create russian dolls of scopes and potentially a lot of brackets (a problem that casync/await solves). The one to one mapping between direct style and CPS is a key feature, paving the way for syntax sugaring the CPS away. More on that bellow.
 
-One aggravating factor that results in 'callback hell' is that javascript makes it really easy to stray off of the well structured single inline callback pattern. You can easily pass named functions, or create functions that take multiple callbacks. Some of Javascript's patterns are a bit if a footgun for beginners.
+One aggravating factor that results in 'callback hell' is that javascript makes it really easy to stray off of the well structured single inline callback last pattern. You can easily pass named functions, or create functions that take multiple callbacks. Some of Javascript's powerful syntax is a bit if a footgun for beginners.
 
 There may be a bit too much flexibility in what gets passed to asynchronous functions but at least with CPS, the callback is required right there where you call the function.
 
-Promises are a caching layer for function results and errors along with a state machine to manage this caching layer. Part of the promise pattern might promote better code structure mostly because of better documentation and the 'then' keyword. However, on top of the excess flexibility brought by callbacks on the calling side, promises add further flexibility and extra ways to shoot at your feet on the returning side.  It allows passing around the next point of execution to be added later and elsewhere. Passing promises around can lead to a convoluted execution flow. Current `await` syntax forces the execution flow to the next line, restoring better encapsulation, but this makes the caching layer and state machine of the promise, unnecessary deadweight computation.
+Promises are a caching layer for function results and errors along with a state machine to manage this caching layer. Part of the promise pattern might promote better code structure. However, on top of the excess flexibility brought by callbacks on the calling side, promises add further flexibility and extra ways to shoot at your feet on the returning side.  It allows passing around the next point of execution to be added later and elsewhere. Passing promises around can lead to a convoluted execution flow. Current `await` syntax forces the execution flow to the next line, restoring better encapsulation, but this makes the caching layer and state machine of the promise, unnecessary deadweight computation.
 
-For the rare cases when you really need to pass execution flow arround, by all means use promises but there is no reason to add the extra caching layer and state machine by default to something as common as a function call. Just let the anonymous function be passed inline and be done with it. The function syntax ends up very straightforward especially using casync/await. The resulting program has less unecessary state.
+For the rare cases when you really need to pass execution flow arround, by all means use promises but there is no reason to add the extra caching layer and state machine by default to something as common as a function call. Just pass the inline function and be done with it. The function syntax ends up very straightforward especially using casync/await. The resulting program has less unecessary state.
 
 With casync/await, more advanced use cases are covered by libraries like [async](https://caolan.github.io/async/v3/). These functions can all be used with `yield`.
 
