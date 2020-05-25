@@ -44,20 +44,18 @@ This module currently contains a single function: `casync` which is a simple gen
 
 To use it, just replace your normal callback function
 ```js
-let anAsyncFn=function(p,done){...};
+let anAsyncFn=function(x,done){...};
 ```
 with:
 ```js
-let anAsyncFn=casync(function*(p,done,next){...});
+let anAsyncFn=casync(function*(x,done,next){...});
 ```
 And then you can use `yield` inside the function in order to basically `await` asynchronous operations. When the yield is encountered, the execution stops. When the provided `next` callback is called, the execution resumes (til the next yield or the end of the function).
 
 Within a casync function, a `return` statement's return value will be automatically be passed to the function's `done` callback (the last callback passed to the function before `next` in the list of arguments), effectively transforming `return res;` statements into `done(null,res);return;`.
 
 The `next` callback which is normally passed to an asynchronous functions from a yield line, follows the normal convention of taking an error as the first parameter and taking returned results in the parameters that follow. 
-```js
-function next(err, res...)
-```
+
 If the asynchronous call finishes with no errors or exceptions (if null is passed as `err`), the results are returned by the `yield` statement and can be assigned to a variabe. If there are multiple arguments after the `err` parameter, they are passed as an array.
 
 ## Error Handling
@@ -67,8 +65,7 @@ If `next` is passed an `err` instead, this `err` is thrown from the `yield` line
 ```js
 let addTitleToReadme=casync(function*(t,done,next){
 	let data = yield fs.readFile('LICENSE',next);
-	//any of the two error styles
-    //would result in an exception at the yield line.
+	//any of the two error styles would result in an exception at the yield line.
 	throw new Error("poo");//This is automatically passed to done calback and thrown from yield line
 	done(new Error("poo"));return;//This would throw at the yield line too.
 
@@ -80,7 +77,7 @@ let anotherAsyncawaitFn=casync(function* (t,done,next) {
 	try{
 		fileWithTitle = yield addTitleToReadme(t,next);
 	}catch(err){
-		console.log("there was an error");//This will be printed whether asyncawaitFn throws or whether it calls done with a non-null first parameter.
+		console.log("there was an error");//This will be printed whether addTitleToReadme throws or whether it calls done with a non-null first parameter.
 		console.log(err);
 	}
     return fileWithTitle;
@@ -155,7 +152,7 @@ asyncFn(x,/*then*/(err, res)=>{
 });
 ```
 
-I'm sure just the fact that promises use the 'then' function name helps understand the intended flow. I think maybe the /* then */ comment should be included in any callback based asynchronous tutorial to help people new to the subject understand the pattern.
+I'm sure just the fact that promises use the 'then' function name helps understand the intended flow. I think maybe the /* then */ comment should be included in any callback based asynchronous tutorial to help people new to the subject understand the pattern. With casync you pass `next` and the "anonymous function" is just the next line.
 
 Adding the `done` callback as the last parameter is important for psychological reasons. When you call the function, you can put a newline at the start of the callback body and execution reads from top to bottom.
 
