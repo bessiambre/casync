@@ -50,7 +50,9 @@ with:
 ```js
 let anAsyncFn=casync(function*(p,done,next){...});
 ```
-And then you can use `yield` inside the function in order to basically `await` asynchronous operations. When the yield is encountered, the execution stops. When the provided `next` callback is called, the execution resumes (til the next yield or the end of the function). Within a casync function, a `return` statement's return value will be automatically passed to the function's `done` callback (the last callback passed to the function before `next` in the list of arguments, if there is one), effectively transforming `return res;` statements into `done(null,res);return;`.
+And then you can use `yield` inside the function in order to basically `await` asynchronous operations. When the yield is encountered, the execution stops. When the provided `next` callback is called, the execution resumes (til the next yield or the end of the function).
+
+Within a casync function, a `return` statement's return value will be automatically be passed to the function's `done` callback (the last callback passed to the function before `next` in the list of arguments), effectively transforming `return res;` statements into `done(null,res);return;`.
 
 The `next` callback which is normally passed to an asynchronous functions from a yield line, follows the normal convention of taking an error as the first parameter and taking returned results in the parameters that follow. 
 ```js
@@ -173,15 +175,13 @@ function asynchronous(x,done){
 To transform a direct style function to CPS, you just append a done parameter and replace `return result;` statements with `done(err,result);return;`
 Compilers sometimes do this automatically with your code since some optimizations can only be performed in CPS form. Calls to functions can also be transformed, although it's a recursive algorithm that can create russian dolls of scopes and potentially a lot of brackets (a problem that casync/await solves). The one to one mapping between direct style and CPS is a key feature, paving the way for syntax sugaring the CPS away. More on that bellow.
 
-One aggravating factor that results in 'callback hell' is that javascript makes it really easy to stray off of the well structured single inline callback pattern. You can easily pass named functions, or create functions that take multiple callbacks. Javascript's power is sometimes its main drawback. Beginners can easily shoot themselves in the foot.
+One aggravating factor that results in 'callback hell' is that javascript makes it really easy to stray off of the well structured single inline callback pattern. You can easily pass named functions, or create functions that take multiple callbacks. Some of Javascript's patterns are a bit if a footgun for beginners.
 
 There may be a bit too much flexibility in what gets passed to asynchronous functions but at least with CPS, the callback is required right there where you call the function.
 
-Promises are a caching layer for function results and errors along with a state machine to manage this caching layer. Part of the promise pattern might promote better code structure mostly because of better documentation and the 'then' keyword. However, on top of the excess flexibility brought by callbacks on the calling side, promises add further flexibility and extra ways to shoot at your feet on the returning side.  It allows passing the next point of execution flow around to be added later and elsewhere. Passing promises around can lead to a convoluted execution flow.
+Promises are a caching layer for function results and errors along with a state machine to manage this caching layer. Part of the promise pattern might promote better code structure mostly because of better documentation and the 'then' keyword. However, on top of the excess flexibility brought by callbacks on the calling side, promises add further flexibility and extra ways to shoot at your feet on the returning side.  It allows passing around the next point of execution to be added later and elsewhere. Passing promises around can lead to a convoluted execution flow. Current `await` syntax forces the execution flow to the next line, restoring better encapsulation, but this makes the caching layer and state machine of the promise, unnecessary deadweight computation.
 
-99% of the time, you just pass an anonymous inline function to promises `promiseReturning().then(()=>{...})`. You don't make use of the caching layer and state machine. They're just deadweight computation. Calling asynchronous(()=>{...}) would give the exact same result with less computation.
-
-For the rare cases when you really need to pass execution flow arround, by all means use promises but there is no reason to add the extra caching layer and state machine by default to something as common as a function call. Just provide the anonymous function inline as the last parameter and be done with it.  The function syntax ends up very straightforward especially using casync/await.
+For the rare cases when you really need to pass execution flow arround, by all means use promises but there is no reason to add the extra caching layer and state machine by default to something as common as a function call. Just let the anonymous function be passed inline and be done with it. The function syntax ends up very straightforward especially using casync/await. The resulting program has less unecessary state.
 
 With casync/await, more advanced use cases are covered by libraries like [async](https://caolan.github.io/async/v3/). These functions can all be used with `yield`.
 
@@ -237,7 +237,7 @@ getTheNews = casync(function*(x, done, next)){
 });
 ```
 
-This would provide very straightforward asynchronous code without extra state machines or caching layers, with better encapsulation (no promises are created to be passed around) and best performance.
+You could syntax sugar away the `next` and `done` callbacks. This would provide very straightforward asynchronous code without extra state machines or caching layers, with better encapsulation (no promises are created to be passed around) and with best performance.
 Casync/await makes the transform very straightforward, removing the issue of recursively nested function scopes and excessive brackets. To me this would completely solve the asynchronous programming problem, allowing you to program in normal direct style all the time just like with non-asynchronous code.
 
 Of course, until this gets syntax sugared and integrated into the javascript spec, you'll need to use the longer form.
