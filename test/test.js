@@ -49,6 +49,26 @@ describe('casync', function() {
 		anotherAsyncawaitFn(3,(err,res)=>{});
 	});
 
+	it('return works after caught exception', function(testdone) {
+		let asyncawaitFn=casync(function*(val,done,next){
+			yield timeoutSet(20,next);
+			throw new Error("poo");
+			done(null,val);
+		});
+		let anotherAsyncawaitFn=casync(function* (p,done,next) {
+			let a;
+			try{
+				a = yield asyncawaitFn(2,next);
+			}catch(err){
+				return "val";
+			}
+			testdone(true);
+		});
+		anotherAsyncawaitFn(3,(err,res)=>{
+			testdone(res!=="val");
+		});
+	});
+
 	it('returning error should generate exception', function(testdone) {
 		let asyncawaitFn=casync(function*(val,done,next){
 			yield timeoutSet(20,next);
