@@ -119,7 +119,7 @@ describe('casync', function() {
 			try{
 				done(null,val);
 			}catch(e){
-				testdone(e.message!=="Done called more than once.");
+				testdone(e.message!=="Done called more than once or called after casync function returned.");
 			}
 		});
 		asyncawaitFn(3,(err,res)=>{

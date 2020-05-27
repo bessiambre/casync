@@ -9,7 +9,6 @@ let casync=function(fn) {
 			throw new Error("done callback is not a function.");
 		}
 		let doneCalled=false;
-		let doneAutoCalled=false;
 		let done=null;
 		let genRunning=false;
 		let oldDone=args[fn.length-2];
@@ -42,7 +41,7 @@ let casync=function(fn) {
 		};
 		done=function(){//this might not be necessary if we don't expose the done callback and always rely on `return`
 			if(doneCalled===true){
-				throw new Error(`Done called more than once.${(doneAutoCalled?"Done was called automatically when casync-ed function reached the end.":'')}`);
+				throw new Error(`Done called more than once or called after casync function returned.`);
 			}else{
 				doneCalled=true;
 				oldDone.apply(this, arguments);
