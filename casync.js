@@ -20,13 +20,14 @@ let casync=function(fn) {
 		let genRunning=false;
 		let oldDone=args[fn.length-2];
 		let doNext=(err,cargs)=>{
-			if(err){
-				gen.throw(err);return;
-			}
 			let v;
 			try{
 				genRunning=true;
-				v=gen.next((cargs.length === 0?undefined:(cargs.length===1?cargs[0]:cargs)));
+				if(err){
+					v=gen.throw(err);
+				}else{
+					v=gen.next((cargs.length === 0?undefined:(cargs.length===1?cargs[0]:cargs)));
+				}
 				genRunning=false;
 			}catch(err){
 				genRunning=false;
