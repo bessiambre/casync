@@ -1,3 +1,4 @@
+![casync](https://github.com/bessiambre/casync/blob/master/casync.png?raw=true)
 # Callback async/await
 Promise free, fast, simplified async/await using [plain old callbacks](https://caolan.github.io/async/v3/global.html#AsyncFunction) ([continuation passing style](https://medium.com/@b.essiambre/continuation-passing-style-patterns-for-javascript-5528449d3070?source=friends_link&sk=976fb25ca6c15eba3a4badcf55ba698e)).
 
