@@ -127,4 +127,20 @@ describe('casync', function() {
 		});
 	});
 
+
+	it('Throws if incorrect number of aruments passed', function(testdone) {
+
+		let asyncawaitFn=casync(function*(val,done,next){
+			yield timeoutSet(20,next);
+			return val;			
+		});
+		try{
+			asyncawaitFn(3,4,(err,res)=>{
+				console.log(err||res);
+			});
+		}catch(e){
+			testdone(e.message!=="Incorrect number of arguments passed to casync function.");
+		}
+	});
+
 });

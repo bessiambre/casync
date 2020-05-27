@@ -2,6 +2,9 @@
 let casync=function(fn,strict=true) {
     return function(){
 		let args = Array.prototype.slice.call(arguments);
+		if(arguments.length!==fn.length-1){
+			throw new Error("Incorrect number of arguments passed to casync function.");
+		}
 		let doneCalled=false;
 		let doneAutoCalled=false;
 		let done=null;
