@@ -9,27 +9,31 @@ let casync=function(fn) {
 			throw new Error("done callback is not a function.");
 		}
 		let doneCalled=false;
-		let done=null;
+		let done=function(){//this might not be necessary if we don't expose the done callback and always rely on `return`
+			if(doneCalled===true){
+				throw new Error(`Done called more than once or called after casync function returned.`);
+			}else{
+				doneCalled=true;
+				oldDone.apply(this, arguments);
+			}
+		};
 		let genRunning=false;
 		let oldDone=args[fn.length-2];
 		let doNext=(err,cargs)=>{
 			if(err){
 				gen.throw(err);return;
 			}
+			let v;
 			try{
 				genRunning=true;
-				let v=gen.next((cargs.length === 0?undefined:(cargs.length===1?cargs[0]:cargs)));
+				v=gen.next((cargs.length === 0?undefined:(cargs.length===1?cargs[0]:cargs)));
 				genRunning=false;
-				if(v.done===true && doneCalled===false){
-					oldDone(null, v.value);//call done if the function reaches the end. (a bit like a normal function returns at the end even if return is not explicitely called)
-				}
 			}catch(err){
 				genRunning=false;
-				if(done!==null){
-					done(err);
-				}else{
-					throw err;
-				}
+				done(err);return;
+			}
+			if(v.done===true && doneCalled===false){
+				oldDone(null, v.value);//call done if the function reaches the end. (a bit like a normal function returns at the end even if return is not explicitely called)
 			}
 		};
 		let next=(err,...cargs)=>{
@@ -37,14 +41,6 @@ let casync=function(fn) {
 				process.nextTick(()=>{doNext(err,cargs);});//need to do nextTick in case the async function was not truly async and we didn't get a chance to yield yet.
 			}else{
 				doNext(err,cargs);//no nextTick here for better performance.
-			}
-		};
-		done=function(){//this might not be necessary if we don't expose the done callback and always rely on `return`
-			if(doneCalled===true){
-				throw new Error(`Done called more than once or called after casync function returned.`);
-			}else{
-				doneCalled=true;
-				oldDone.apply(this, arguments);
 			}
 		};
 		args[fn.length-2]=done;
