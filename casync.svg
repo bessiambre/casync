@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="730"
-   height="100"
-   viewBox="0 0 193.146 26.45835"
+   width="600"
+   height="80"
+   viewBox="0 0 158.75014 21.16668"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
@@ -50,7 +50,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -58,7 +58,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-270.54103)">
+     transform="translate(0,-275.8327)">
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.75223351px;line-height:1.25;font-family:Cyberdyne;-inkscape-font-specification:Cyberdyne;letter-spacing:0px;word-spacing:0px;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -115,7 +115,7 @@
        d="m 125.66878,66.668003 v 2.496082 h -10.13511 q -1.25641,0 -1.97676,-0.552823 -0.70359,-0.569576 -0.70359,-1.524454 v -7.471496 h 12.81546 v 2.496083 h -9.53203 v 4.556608 z" />
     <g
        id="g2357"
-       transform="matrix(0.75498321,0,0,0.75498321,22.493365,93.627717)"
+       transform="matrix(0.75498321,0,0,0.75498321,0.79752343,97.331886)"
        style="stroke-width:1.32453287">
       <g
          style="fill:#9296ff;fill-opacity:1;stroke-width:0.62968534"
@@ -231,7 +231,7 @@
     <path
        id="use12724-2-76-5-9-9"
        style="display:inline;opacity:1;fill:#ffffff;fill-opacity:0.16521738;stroke:none;stroke-width:0.40000007;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:5.19999981;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.8"
-       d="M -5.2105038,259.62697 H 193.59868 v 0.95024 H -5.2105038 Z m 0,1.90044 H 193.59868 v 0.95016 H -5.2105038 Z m 0,1.90038 H 193.59868 v 0.95025 H -5.2105038 Z m 0,1.90046 H 193.59868 v 0.95021 H -5.2105038 Z m 0,1.90046 H 193.59868 v 0.95022 H -5.2105038 Z m 0,1.90042 H 193.59868 v 0.95017 H -5.2105038 Z m 0,1.90039 H 193.59868 v 0.95022 H -5.2105038 Z m 0,1.90046 H 193.59868 v 0.95018 H -5.2105038 Z m 0,1.9004 H 193.59868 v 0.9502 H -5.2105038 Z m 0,1.90036 H 193.59868 v 0.95024 H -5.2105038 Z m 0,1.90045 H 193.59868 v 0.95023 H -5.2105038 Z m 0,1.90048 H 193.59868 v 0.95023 H -5.2105038 Z m 0,1.90046 H 193.59868 v 0.95019 H -5.2105038 Z m 0,1.90041 H 193.59868 v 0.95014 H -5.2105038 Z m 0,1.90039 H 193.59868 v 0.9502 H -5.2105038 Z m 0,1.90043 H 193.59868 v 0.95022 H -5.2105038 Z m 0,1.90044 H 193.59868 v 0.95014 H -5.2105038 Z m 0,1.90042 H 193.59868 v 0.95015 H -5.2105038 Z m 0,1.90038 H 193.59868 v 0.95026 H -5.2105038 Z m 0,1.90048 H 193.59868 v 0.95022 H -5.2105038 Z m 0,1.90042 H 193.59868 v 0.95018 H -5.2105038 Z m 0,1.90041 H 193.59868 v 0.95022 H -5.2105038 Z m 0,1.9004 H 193.59868 v 0.95027 H -5.2105038 Z m 0,1.90044 H 193.59868 c -18.28934,1.7111 -198.8091838,1.7111 -198.8091838,0 z"
+       d="M -4.7038331,262.41365 H 194.10535 v 0.95024 H -4.7038331 Z m 0,1.90044 H 194.10535 v 0.95016 H -4.7038331 Z m 0,1.90038 H 194.10535 v 0.95025 H -4.7038331 Z m 0,1.90046 H 194.10535 v 0.95021 H -4.7038331 Z m 0,1.90046 H 194.10535 v 0.95022 H -4.7038331 Z m 0,1.90042 H 194.10535 v 0.95017 H -4.7038331 Z m 0,1.90039 H 194.10535 v 0.95022 H -4.7038331 Z m 0,1.90046 H 194.10535 v 0.95018 H -4.7038331 Z m 0,1.9004 H 194.10535 v 0.9502 H -4.7038331 Z m 0,1.90036 H 194.10535 v 0.95024 H -4.7038331 Z m 0,1.90045 H 194.10535 v 0.95023 H -4.7038331 Z m 0,1.90048 H 194.10535 v 0.95023 H -4.7038331 Z m 0,1.90046 H 194.10535 V 286.169 H -4.7038331 Z m 0,1.90041 H 194.10535 v 0.95014 H -4.7038331 Z m 0,1.90039 H 194.10535 v 0.9502 H -4.7038331 Z m 0,1.90043 H 194.10535 v 0.95022 H -4.7038331 Z m 0,1.90044 H 194.10535 v 0.95014 H -4.7038331 Z m 0,1.90042 H 194.10535 v 0.95015 H -4.7038331 Z m 0,1.90038 H 194.10535 v 0.95026 H -4.7038331 Z m 0,1.90048 H 194.10535 v 0.95022 H -4.7038331 Z m 0,1.90042 H 194.10535 v 0.95018 H -4.7038331 Z m 0,1.90041 H 194.10535 v 0.95022 H -4.7038331 Z m 0,1.9004 H 194.10535 v 0.95027 H -4.7038331 Z m 0,1.90044 H 194.10535 c -18.28934,1.7111 -198.8091831,1.7111 -198.8091831,0 z"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" />
   </g>
