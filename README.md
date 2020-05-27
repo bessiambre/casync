@@ -34,7 +34,7 @@ $ npm install casync
 
 ## Features
 
-  * Small and simple implementation (only 54 lines of code, no dependency).
+  * Small and simple implementation (only 57 lines of code, no dependency).
   * Proper exception handling.
   * More than 2x as fast as native async/await.
   * Returned value or thrown errors passed to done callback
