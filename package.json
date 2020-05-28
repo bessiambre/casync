@@ -3,6 +3,9 @@
   "version": "1.0.21",
   "description": "Promise free async/await.",
   "main": "casync.js",
+  "files": [
+    "casync.js"
+  ],
   "keywords": [
     "async",
     "await",
