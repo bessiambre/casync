@@ -1,6 +1,6 @@
 {
   "name": "casync",
-  "version": "1.0.21",
+  "version": "1.0.23",
   "description": "Promise free async/await.",
   "main": "casync.js",
   "files": [

@@ -11,7 +11,7 @@ let casync=function(fn) {
 		let doneCalled=false;
 		let done=function(){//this might not be necessary if we don't expose the done callback and always rely on `return`
 			if(doneCalled===true){
-				throw new Error(`Done called more than once or called after casync function returned.`);
+				throw new Error(`done called more than once or called after casync function returned.`);
 			}else{
 				doneCalled=true;
 				oldDone.apply(this, arguments);
@@ -34,10 +34,13 @@ let casync=function(fn) {
 				done(err);return;
 			}
 			if(v.done===true && doneCalled===false){
-				oldDone(null, v.value);//call done if the function reaches the end. (a bit like a normal function returns at the end even if return is not explicitely called)
+				done(null, v.value);//call done if the function reaches the end. (a bit like a normal function returns at the end even if return is not explicitely called)
 			}
 		};
 		let next=(err,...cargs)=>{
+			if(doneCalled===true){
+				throw new Error(`next called after casync function done.`);
+			}
 			if(genRunning){
 				process.nextTick(()=>{doNext(err,cargs);});//need to do nextTick in case the async function was not truly async and we didn't get a chance to yield yet.
 			}else{

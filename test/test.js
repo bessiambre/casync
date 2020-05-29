@@ -139,8 +139,44 @@ describe('casync', function() {
 			try{
 				done(null,val);
 			}catch(e){
-				testdone(e.message!=="Done called more than once or called after casync function returned.");
+				testdone(e.message!=="done called more than once or called after casync function returned.");
 			}
+		});
+		asyncawaitFn(3,(err,res)=>{
+			
+		});
+	});
+
+	it('Throws if done called after return', function(testdone) {
+
+		let asyncawaitFn=casync(function*(val,done,next){
+			yield timeoutSet(10,next);
+			timeoutSet(10,()=>{
+				try{
+					done(null,val);
+				}catch(e){
+					testdone(e.message!=="done called more than once or called after casync function returned.");
+				}
+			});
+			return val;
+		});
+		asyncawaitFn(3,(err,res)=>{
+			
+		});
+	});
+
+	it('Throws if next called after done', function(testdone) {
+
+		let asyncawaitFn=casync(function*(val,done,next){
+			yield timeoutSet(10,next);
+			timeoutSet(10,()=>{
+				try{
+					next();
+				}catch(e){
+					testdone(e.message!=="next called after casync function done.");
+				}
+			});
+			return val;
 		});
 		asyncawaitFn(3,(err,res)=>{
 			
