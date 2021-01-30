@@ -1,5 +1,5 @@
 "use strict";
-let nextTick=process.nextTick || ((c)=>{setTimeout(c,0);});//for browsers
+let nextTick=(typeof process !== 'undefined'?process.nextTick:(c)=>setTimeout(c,0));//for browsers
 let casync=function(fn) {
     return function(){
 		let args = Array.prototype.slice.call(arguments);

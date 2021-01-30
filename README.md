@@ -56,7 +56,7 @@ let addTitleToReadme=casync(function*(prepend,next){
 ```
 
 
-## Installatio
+## Installation
 
 ```bash
 $ npm install casync
