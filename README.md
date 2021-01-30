@@ -55,6 +55,20 @@ let addTitleToReadme=casync(function*(prepend,next){
 });
 ```
 
+and easily loop over asyncronous operations one at a time instead of in parallel
+
+```js
+let addTitleToReadmes=casync(function*(prepend,next){
+	let files=['README.md','README2.md'];
+	let newContents=[];
+	for(let i=0;i<files.length;i++){
+		let data = yield fs.readFile(files[i],next);//this pauses the iteration until the file is read
+		newContents[i]= prepend+"\n"+data;
+	}
+	return newContents;
+});
+```
+
 
 ## Installation
 
