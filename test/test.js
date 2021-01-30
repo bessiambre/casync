@@ -7,16 +7,16 @@ let timeoutSet=function(t,done){
 
 describe('casync', function() {
 
-	it('should return passed val', function(done) {
-		let anAsyncawaitFn=casync(function*(val,done,next){
-			yield timeoutSet(20,next);
-			done(null,val);
-		});
-		anAsyncawaitFn(2,(err,res)=>done(res!==2));
-	});
+	// it('should return passed val', function(done) {
+	// 	let anAsyncawaitFn=casync(function*(val,done,next){
+	// 		yield timeoutSet(20,next);
+	// 		done(null,val);
+	// 	});
+	// 	anAsyncawaitFn(2,(err,res)=>done(res!==2));
+	// });
 
 	it('should return passed val 2', function(done) {
-		let anAsyncawaitFn=casync(function*(val,done,next){
+		let anAsyncawaitFn=casync(function*(val,next){
 			yield timeoutSet(20,next);
 			return val;
 		});
@@ -24,20 +24,20 @@ describe('casync', function() {
 	});
 
 	it('Works with non truly async function', function(done) {
-		let anAsyncawaitFn=casync(function*(val,done,next){
-			yield next(null,val);
-			done(null,val);
+		let anAsyncawaitFn=casync(function*(val,next){
+			let val2=yield next(null,val);
+			return val2;
 		});
 		anAsyncawaitFn(2,(err,res)=>done(res!==2));
 	});
 
 	it('Throwing should generate exception', function(testdone) {
-		let asyncawaitFn=casync(function*(val,done,next){
+		let asyncawaitFn=casync(function*(val,next){
 			yield timeoutSet(20,next);
 			throw new Error("poo");
-			done(null,val);
+			return val;
 		});
-		let anotherAsyncawaitFn=casync(function* (p,done,next) {
+		let anotherAsyncawaitFn=casync(function* (p,next) {
 			let a;
 			try{
 				a = yield asyncawaitFn(2,next);
@@ -50,12 +50,11 @@ describe('casync', function() {
 	});
 
 	it('return works after caught exception', function(testdone) {
-		let asyncawaitFn=casync(function*(val,done,next){
+		let asyncawaitFn=casync(function*(val,next){
 			yield timeoutSet(20,next);
 			throw new Error("poo");
-			done(null,val);
 		});
-		let anotherAsyncawaitFn=casync(function* (p,done,next) {
+		let anotherAsyncawaitFn=casync(function* (p,next) {
 			let a;
 			try{
 				a = yield asyncawaitFn(2,next);
@@ -69,13 +68,12 @@ describe('casync', function() {
 		});
 	});
 
-	it('returning error should generate exception', function(testdone) {
-		let asyncawaitFn=casync(function*(val,done,next){
+	it('throwing error should generate exception', function(testdone) {
+		let asyncawaitFn=casync(function*(val,next){
 			yield timeoutSet(20,next);
-			done(new Error("poo"));return;
-			done(null,val);
+			throw new Error("poo");
 		});
-		let anotherAsyncawaitFn=casync(function* (p,done,next) {
+		let anotherAsyncawaitFn=casync(function* (p,next) {
 			let a;
 			try{
 				a = yield asyncawaitFn(2,next);
@@ -88,11 +86,11 @@ describe('casync', function() {
 	});
 
 	it('Thrown error should be turned into passed error', function(testdone) {
-		let asyncawaitFn=casync(function*(val,done,next){
+		let asyncawaitFn=casync(function*(val,next){
 			yield timeoutSet(20,next);
-			done(null,val);
+			return val;
 		});
-		let anotherAsyncawaitFn=casync(function* (p,done,next) {
+		let anotherAsyncawaitFn=casync(function* (p,next) {
 			let a;
 			try{
 				a = yield asyncawaitFn(2,next);
@@ -100,7 +98,6 @@ describe('casync', function() {
 				testdone(true);return;
 			}
 			throw "poo";
-			done(null,a);
 		});
 		anotherAsyncawaitFn(3,(err,res)=>{
 			testdone(err!=="poo");
@@ -108,7 +105,7 @@ describe('casync', function() {
 	});
 	
 	it('Done should automatically be called when generater reaches end', function(testdone) {
-		let asyncawaitFn=casync(function*(val,done,next){
+		let asyncawaitFn=casync(function*(val,next){
 			yield timeoutSet(20,next);
 		});
 		asyncawaitFn(3,(err,res)=>{
@@ -121,9 +118,9 @@ describe('casync', function() {
 		function Constr(){
 			this.x=42;
 		}
-		Constr.prototype.asyncawaitFn=casync(function*(val,done,next){
+		Constr.prototype.asyncawaitFn=casync(function*(val,next){
 			yield timeoutSet(20,next);
-			done(null,this.x);
+			return this.x;
 		});
 		let o=new Constr();
 		o.asyncawaitFn(3,(err,res)=>{
@@ -131,43 +128,43 @@ describe('casync', function() {
 		});
 	});
 
-	it('Throws if done called twice', function(testdone) {
+	// it('Throws if done called twice', function(testdone) {
 
-		let asyncawaitFn=casync(function*(val,done,next){
-			yield timeoutSet(20,next);
-			done(null,val);
-			try{
-				done(null,val);
-			}catch(e){
-				testdone(e.message!=="done called more than once or called after casync function returned.");
-			}
-		});
-		asyncawaitFn(3,(err,res)=>{
+	// 	let asyncawaitFn=casync(function*(val,done,next){
+	// 		yield timeoutSet(20,next);
+	// 		done(null,val);
+	// 		try{
+	// 			done(null,val);
+	// 		}catch(e){
+	// 			testdone(e.message!=="done called more than once or called after casync function returned.");
+	// 		}
+	// 	});
+	// 	asyncawaitFn(3,(err,res)=>{
 			
-		});
-	});
+	// 	});
+	// });
 
-	it('Throws if done called after return', function(testdone) {
+	// it('Throws if done called after return', function(testdone) {
 
-		let asyncawaitFn=casync(function*(val,done,next){
-			yield timeoutSet(10,next);
-			timeoutSet(10,()=>{
-				try{
-					done(null,val);
-				}catch(e){
-					testdone(e.message!=="done called more than once or called after casync function returned.");
-				}
-			});
-			return val;
-		});
-		asyncawaitFn(3,(err,res)=>{
+	// 	let asyncawaitFn=casync(function*(val,done,next){
+	// 		yield timeoutSet(10,next);
+	// 		timeoutSet(10,()=>{
+	// 			try{
+	// 				done(null,val);
+	// 			}catch(e){
+	// 				testdone(e.message!=="done called more than once or called after casync function returned.");
+	// 			}
+	// 		});
+	// 		return val;
+	// 	});
+	// 	asyncawaitFn(3,(err,res)=>{
 			
-		});
-	});
+	// 	});
+	// });
 
 	it('Throws if next called after done', function(testdone) {
 
-		let asyncawaitFn=casync(function*(val,done,next){
+		let asyncawaitFn=casync(function*(val,next){
 			yield timeoutSet(10,next);
 			timeoutSet(10,()=>{
 				try{
@@ -186,7 +183,7 @@ describe('casync', function() {
 
 	it('Throws if incorrect number of aruments passed', function(testdone) {
 
-		let asyncawaitFn=casync(function*(val,done,next){
+		let asyncawaitFn=casync(function*(val,next){
 			yield timeoutSet(20,next);
 			return val;			
 		});

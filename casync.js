@@ -1,24 +1,21 @@
 "use strict";
+let nextTick=process.nextTick || ((c)=>{setTimeout(c,0);});//for browsers
 let casync=function(fn) {
     return function(){
 		let args = Array.prototype.slice.call(arguments);
-		if(arguments.length>fn.length-1){
+		if(arguments.length>fn.length){
 			throw new Error("Incorrect number of arguments passed to casync function.");
 		}
-		if(typeof args[fn.length-2] !== "function"){//if last argument is a function assume continuation passing style
+		if(typeof args[fn.length-1] !== "function"){//if last argument is a function assume continuation passing style
 			throw new Error("done callback is not a function.");
 		}
 		let doneCalled=false;
-		let done=function(){//this might not be necessary if we don't expose the done callback and always rely on `return`
-			if(doneCalled===true){
-				throw new Error(`done called more than once or called after casync function returned.`);
-			}else{
+		let oldDone=args[fn.length-1];
+		let done=function(){
 				doneCalled=true;
 				oldDone.apply(this, arguments);
-			}
 		};
 		let genRunning=false;
-		let oldDone=args[fn.length-2];
 		let doNext=(err,cargs)=>{
 			let v;
 			try{
@@ -47,7 +44,6 @@ let casync=function(fn) {
 				doNext(err,cargs);//no nextTick here for better performance.
 			}
 		};
-		args[fn.length-2]=done;
 		args[fn.length-1]=next;
 		let gen = fn.apply(this, args);
 		next(null);
